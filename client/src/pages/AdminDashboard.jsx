@@ -191,7 +191,7 @@ const AdminDashboard = () => {
                                     <th className="p-5 border-b border-slate-200">Name</th>
                                     <th className="p-5 border-b border-slate-200">Status</th>
                                     <th className="p-5 border-b border-slate-200">Round</th>
-                                    <th className="p-5 border-b border-slate-200">HTML</th>
+                                    <th className="p-5 border-b border-slate-200">Debug</th>
                                     <th className="p-5 border-b border-slate-200">Flex</th>
                                     <th className="p-5 border-b border-slate-200">Total Score</th>
                                     <th className="p-5 border-b border-slate-200">Time (G1 / G2)</th>

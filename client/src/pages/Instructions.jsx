@@ -52,15 +52,15 @@ const Instructions = () => {
                             <div className="bg-slate-800 p-5 rounded-xl border border-slate-700">
                                 <h3 className="font-bold text-yellow-400 mb-2 flex items-center gap-2">
                                     <span className="bg-yellow-500/20 p-1 rounded">1</span> 
-                                    Game 1: HTML Treasure Hunt
+                                    Game 1: Debugging Challenge
                                 </h3>
                                 <p className="text-sm text-slate-300 mb-2">
-                                    You will be given riddles describing HTML elements. 
-                                    Your task is to guess the correct <span className="font-mono text-white bg-slate-700 px-1 rounded">tagname</span>.
+                                    You will be given code with bugs (React/JS/CSS). 
+                                    Your task is to <span className="font-mono text-white bg-slate-700 px-1 rounded">fix the error</span> to make the code run correctly.
                                 </p>
                                 <div className="bg-slate-900/50 p-3 rounded text-xs font-mono text-slate-400 border border-slate-700/50">
-                                    <span className="text-blue-400">Riddle:</span> "I define a paragraph."<br/>
-                                    <span className="text-green-400">Answer:</span> p
+                                    <span className="text-blue-400">Bug:</span> "Image is overflowing container"<br/>
+                                    <span className="text-green-400">Fix:</span> overflow: hidden; -&gt; overflow: auto;
                                 </div>
                             </div>
 
