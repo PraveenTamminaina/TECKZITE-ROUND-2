@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useGame } from '../context/GameContext';
 import useAntiCheat from '../hooks/useAntiCheat';
 
-const GameLayout = ({ children, title }) => {
+const GameLayout = ({ children, title, hideScore = false }) => {
     const { user, logout } = useGame();
     // useAntiCheat(); // DISABLED: Anti-cheat temporarily disabled per user request
 
@@ -35,15 +35,17 @@ const GameLayout = ({ children, title }) => {
                     </div>
                 </div>
 
-                <div className="absolute left-1/2 transform -translate-x-1/2">
-                    <div className="bg-slate-900 px-6 py-2 rounded-full border border-slate-700 flex items-center space-x-6">
-                        <div className="text-center">
-                            <span className="block text-xs text-slate-500 uppercase font-bold">Score</span>
-                            <span className="text-xl font-mono font-bold text-green-400">{user?.scores?.total || 0}</span>
+                {!hideScore && (
+                    <div className="absolute left-1/2 transform -translate-x-1/2">
+                        <div className="bg-slate-900 px-6 py-2 rounded-full border border-slate-700 flex items-center space-x-6">
+                            <div className="text-center">
+                                <span className="block text-xs text-slate-500 uppercase font-bold">Score</span>
+                                <span className="text-xl font-mono font-bold text-green-400">{user?.scores?.total || 0}</span>
+                            </div>
+                            {/* Timer could go here if global */}
                         </div>
-                        {/* Timer could go here if global */}
                     </div>
-                </div>
+                )}
 
                 <div className="flex items-center space-x-4">
                     <div className="text-right">

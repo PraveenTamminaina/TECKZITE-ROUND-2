@@ -7,7 +7,7 @@ const Finished = () => {
     const { user } = useGame();
 
     return (
-        <GameLayout>
+        <GameLayout hideScore={true}>
             <div className="flex flex-col items-center justify-center min-h-[calc(100vh-80px)] p-6 text-center relative overflow-hidden">
                  {/* Background Glow */}
                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-green-500/10 rounded-full blur-[100px] pointer-events-none"></div>

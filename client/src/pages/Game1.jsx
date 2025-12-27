@@ -13,92 +13,58 @@ const stripComments = (code) => {
 const CHALLENGES = [
     {
         id: 1,
-        title: "The Disappearing Act",
-        description: "The image pushes the caption out of view! Fix it so both fit nicely.",
-        hint: "Check the container's overflow and height properties.",
-        language: "css",
-        initialCode: `.container {
-  width: 300px;
-  height: 200px;
-  overflow: hidden; /* Fix this line */
-  border: 1px solid #fff;
-  position: relative;
+        title: "Broken Calculator",
+        description: "The function returns '55' instead of 10! The output must be the number 10.",
+        language: "javascript",
+        initialCode: `function add(a, b) {
+  // Input: a=5, b="5"
+  return a + b;
 }
-.container img {
-  width: 100%;
-  height: auto;
-}`,
+
+console.log(add(5, "5"));`,
         validation: (code) => {
             const clean = stripComments(code);
-            // Must NOT have 'overflow: hidden' active
-            // Must have overflow: auto/scroll/visible OR height adjustment maybe? 
-            // Simplest fix for "pushes caption out" allowing scroll is overflow: auto
-            return !/overflow:\s*hidden/.test(clean) && /overflow:\s*(auto|scroll|visible)/.test(clean);
+            return (clean.includes('parseInt') || clean.includes('Number(') || clean.includes('+a') || clean.includes('+b') || clean.includes('1*'));
         },
-        type: 'visual',
-        render: (code) => (
-            <div className="flex items-center justify-center h-full">
-                <style>{code}</style>
-                <div className="container bg-slate-800 rounded">
-                    <img src="https://images.unsplash.com/photo-1546527868-ccb7ee7dfa6a?w=600" alt="Puppy" />
-                    <p className="p-2 text-white bg-slate-700/80 absolute bottom-0 w-full text-center">A cute puppy!</p>
-                </div>
-            </div>
-        )
+        type: 'console',
+        logs: (code) => {
+            const clean = stripComments(code);
+            const isFixed = (clean.includes('parseInt') || clean.includes('Number(') || clean.includes('+a') || clean.includes('+b') || clean.includes('1*'));
+            return isFixed 
+                ? ['> 10'] 
+                : ['> "55"'];
+        }
     },
     {
         id: 2,
-        title: "The Button That Won't Click",
-        description: "The close button can't be clicked because of the overlay!",
-        hint: "The overlay is blocking clicks. You need to enable pointer events on the button.",
-        language: "css",
-        initialCode: `.overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  pointer-events: none;
-  z-index: 10;
-}
-.close-btn {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  z-index: 20;
-  cursor: pointer;
-  /* Add something here */
+        title: "The Scope Trap",
+        description: "The loop prints '3' three times! It should print 0, 1, 2.",
+        language: "javascript",
+        initialCode: `for (var i = 0; i < 3; i++) {
+  setTimeout(() => {
+    console.log(i);
+  }, 100);
 }`,
         validation: (code) => {
             const clean = stripComments(code);
-            // Must find pointer-events: auto/all inside .close-btn block ideally, 
-            // but for simple regex, just ensuring it exists in the file is a start.
-            // Better: split by selector? Too complex for this simple editor.
-            // Presence of pointer-events: auto/all is good enough if we assume they don't break .overlay
-            return /pointer-events:\s*(auto|all)/.test(clean);
+            return clean.includes('let i') || clean.includes('forEach');
         },
-        type: 'visual',
-        render: (code) => (
-            <div className="relative w-full h-64 bg-slate-700 rounded overflow-hidden">
-                <style>{code}</style>
-                <div className="p-8 text-white">Content below overlay...</div>
-                <div className="overlay"></div>
-                <button 
-                    className="close-btn bg-red-500 hover:bg-red-400 text-white px-4 py-2 rounded shadow-lg active:scale-95 transition-transform"
-                    onClick={() => alert("Success! You clicked the button!")}
-                >
-                    Close X
-                </button>
-            </div>
-        )
+        type: 'console',
+        logs: (code) => {
+             const clean = stripComments(code);
+             return (clean.includes('let i') || clean.includes('forEach'))
+                ? ['> 0', '> 1', '> 2']
+                : ['> 3', '> 3', '> 3'];
+        }
     },
     {
         id: 3,
         title: "The Vanishing Value",
-        description: "The console shows an empty string because the page reloads!",
-        hint: "Prevent the default form submission behavior.",
+        description: "Console shows empty string because the page reloads! Fix it to log 'Submitted: Hello World'.",
         language: "javascript",
         initialCode: `// Form Submit Handler
 function handleSubmit(e) {
-  // Fix missing line here
+  
   
   const input = document.querySelector('input');
   console.log("Submitted:", input.value);
@@ -116,16 +82,18 @@ function handleSubmit(e) {
     {
         id: 4,
         title: "The Infinite Loop",
-        description: "The API is being called infinitely! Fix the useEffect hook.",
-        hint: "The dependency array is missing.",
+        description: "Infinite API calls! Fix the useEffect dependency array issue. Expected: '(Effect ran once)'.",
         language: "javascript",
-        initialCode: `useEffect(() => {
-  console.log("Fetching user data...");
-  setUsers(['Alice', 'Bob']);
-}); // Fix this line`,
+        initialCode: `function fetchUserData() {
+  // const [users, setUsers] = useState([]);
+  
+  useEffect(() => {
+    console.log("Fetching /api/users...");
+    // setUsers(data);
+  });
+}`,
         validation: (code) => {
             const clean = stripComments(code);
-            // Must have [], [users], etc - strict check for dependency array closing
             return /useEffect\(\(\)\s*=>\s*{[\s\S]*?},\s*\[.*\]\s*\)/.test(clean.replace(/\s+/g, ' '));
         },
         type: 'console',
@@ -133,97 +101,159 @@ function handleSubmit(e) {
             const clean = stripComments(code);
             const isFixed = /useEffect\(\(\)\s*=>\s*{[\s\S]*?},\s*\[.*\]\s*\)/.test(clean.replace(/\s+/g, ' '));
             return isFixed 
-                ? ['> Fetching user data...', '> (Effect ran once)'] 
-                : ['> Fetching user data...', '> Fetching user data...', '> Fetching user data...', '> (Infinite Loop detected!)'];
+                ? ['> Fetching /api/users...', '> (Effect ran once)'] 
+                : ['> Fetching /api/users...', '> Fetching /api/users...', '> (Infinite Loop detected!)'];
         }
     },
     {
         id: 5,
-        title: "The Z-Index Nightmare",
-        description: "The dropdown appears BEHIND the modal container.",
-        hint: "The modal creates a new stacking context.",
-        language: "css",
-        initialCode: `.modal-container {
-  position: relative;
-  z-index: 10;
-  background: #334155;
-  padding: 20px;
-  border-radius: 8px;
-  /* Try isolation or z-index changes */
-}
-.dropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 200px;
-  background: #2563eb;
-  padding: 10px;
-  z-index: 9999;
-  border-radius: 4px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-}
-.content-below {
-  position: relative;
-  z-index: 20;
-  background: #475569;
-  padding: 20px;
-  margin-top: -10px;
-  border-radius: 8px;
-}`,
+        title: "Unintended Mutation",
+        description: "Sorting the array changed the original data! Keep 'original' as [3, 1, 2].",
+        language: "javascript",
+        initialCode: `const original = [3, 1, 2];
+const sorted = original.sort();
+
+console.log("Original:", original); // Should be [3, 1, 2]
+console.log("Sorted:", sorted);     // Should be [1, 2, 3]`,
         validation: (code) => {
-             const clean = stripComments(code);
-             // Solution 1: Remove z-index from .modal-container
-             // Solution 2: set z-index: auto on .modal-container
-             // Solution 3: set isolation: isolate (maybe? depends on browser)
-             // Solution 4: make dropdown fixed (but that breaks flow sometimes)
-             
-             // Check if .modal-container still has z-index: 10
-             // We can check if z-index: 10 is REMOVED or CHANGED to auto
-             const modalHasIndex = /\.modal-container\s*{[^}]*z-index:\s*10[^}]*}/.test(clean.replace(/\s+/g, ' '));
-             const modalHasAuto = /\.modal-container\s*{[^}]*z-index:\s*auto[^}]*}/.test(clean.replace(/\s+/g, ' '));
-             
-             return !modalHasIndex || modalHasAuto;
+            const clean = stripComments(code);
+            return clean.includes('[...original]') || clean.includes('slice()') || clean.includes('from(original)') || clean.includes('concat()');
         },
-        type: 'visual',
-        render: (code) => (
-            <div className="flex flex-col items-center justify-center h-full p-8 gap-4">
-                <style>{code}</style>
-                <div className="modal-container text-white w-64">
-                    I am the Modal Parent
-                    <div className="dropdown text-white font-bold">
-                        I am the Dropdown!
-                    </div>
-                </div>
-                <div className="content-below text-white w-64 h-32">
-                    I am content below with z-index: 20.
-                    If broken, dropdown is behind me.
-                </div>
-            </div>
-        )
+        type: 'console',
+        logs: (code) => {
+             const clean = stripComments(code);
+             const isFixed = clean.includes('[...original]') || clean.includes('slice()') || clean.includes('from(original)') || clean.includes('concat()');
+             return isFixed
+                ? ['> Original: [3, 1, 2]', '> Sorted: [1, 2, 3]']
+                : ['> Original: [1, 2, 3] (Whoops!)', '> Sorted: [1, 2, 3]'];
+        }
     },
     {
         id: 6,
         title: "Memory Leak Hunt",
-        description: "The cache grows infinitely.",
-        hint: "You need to limit the cache size.",
+        description: "App crashes after running for a while! Cache grows infinitely.",
         language: "javascript",
-        initialCode: `function addToCache(data) {
+        initialCode: `let cache = [];
+
+function addToCache(data) {
   cache.push(data);
-  // Add cleanup or limit here
+  
   
   console.log("Cache size:", cache.length);
 }`,
         validation: (code) => {
             const clean = stripComments(code);
-            return clean.includes('shift()') || clean.includes('splice') || clean.includes('length = 0') || clean.includes('=[]');
+            return clean.includes('shift()') || clean.includes('splice') || clean.includes('length = 0') || clean.includes('=[]') || (clean.includes('if') && clean.includes('length'));
         },
         type: 'console',
         logs: (code) => {
              const clean = stripComments(code);
-             const hasCleanup = clean.includes('shift()') || clean.includes('splice') || clean.includes('length = 0') || clean.includes('=[]');
+             const hasCleanup = clean.includes('shift()') || clean.includes('splice') || clean.includes('length = 0') || clean.includes('=[]') || (clean.includes('if') && clean.includes('length'));
              return hasCleanup
                 ? ['> Cache size: 1', '> ...', '> Cache size: 100', '> (Cleanup triggered)', '> Cache size: 100']
                 : ['> Cache size: 1', '> Cache size: 2', '> ...', '> Cache size: 99999', '> (Crash imminent!)'];
+        }
+    },
+    {
+        id: 7,
+        title: "Lost Context",
+        description: "The object method loses access to 'this' when passed as a callback. Fix it to log 'Alice'.",
+        language: "javascript",
+        initialCode: `const user = {
+    name: 'Alice',
+    greet() {
+        console.log("Hello, " + this.name);
+    }
+};
+
+// Lost context here:
+setTimeout(user.greet, 100);`,
+        validation: (code) => {
+            const clean = stripComments(code);
+            return clean.includes('bind(user)') || clean.includes('() => user.greet()') || clean.includes('call') || clean.includes('apply');
+        },
+        type: 'console',
+        logs: (code) => {
+            const clean = stripComments(code);
+            const isFixed = clean.includes('bind(user)') || clean.includes('() => user.greet()') || clean.includes('call') || clean.includes('apply');
+            return isFixed
+                ? ['> Hello, Alice']
+                : ['> Hello, undefined'];
+        }
+    },
+    {
+        id: 8,
+        title: "Floating Point Precision",
+        description: "0.1 + 0.2 checks against 0.3 but fails! Fix the condition to log 'Equal'.",
+        language: "javascript",
+        initialCode: `const result = 0.1 + 0.2;
+const expected = 0.3;
+
+if (result === expected) {
+    console.log("Equal");
+} else {
+    console.log("Not Equal");
+}`,
+        validation: (code) => {
+            const clean = stripComments(code);
+            return clean.includes('Math.abs') || clean.includes('toFixed') || clean.includes('< Number.EPSILON');
+        },
+        type: 'console',
+        logs: (code) => {
+            const clean = stripComments(code);
+            const isFixed = clean.includes('Math.abs') || clean.includes('toFixed') || clean.includes('< Number.EPSILON');
+            return isFixed
+                ? ['> Equal']
+                : ['> Not Equal'];
+        }
+    },
+    {
+        id: 9,
+        title: "Silent Filter",
+        description: "Filter returns an empty array! Fix it to return numbers greater than 10 ([15, 20]).",
+        language: "javascript",
+        initialCode: `const numbers = [5, 10, 15, 20];
+const filtered = numbers.filter(num => {
+    num > 10;
+});
+
+console.log(filtered);`,
+        validation: (code) => {
+            const clean = stripComments(code);
+            return (clean.includes('return num > 10') || (clean.includes('=>') && !clean.includes('{') && clean.includes('num > 10')));
+        },
+        type: 'console',
+        logs: (code) => {
+            const clean = stripComments(code);
+            const isFixed = (clean.includes('return num > 10') || (clean.includes('=>') && !clean.includes('{') && clean.includes('num > 10')));
+            return isFixed
+                ? ['> [15, 20]']
+                : ['> []'];
+        }
+    },
+    {
+        id: 10,
+        title: "Immutable String",
+        description: "String assignment doesn't work! Fix the function to return 'Hello'.",
+        language: "javascript",
+        initialCode: `function capitalize() {
+    let str = "hello";
+    str[0] = "H"; // This does nothing
+    return str;
+}
+
+console.log(capitalize());`,
+        validation: (code) => {
+            const clean = stripComments(code);
+            return clean.includes('replace') || clean.includes('slice') || clean.includes('charAt') || clean.includes('"H" +');
+        },
+        type: 'console',
+        logs: (code) => {
+            const clean = stripComments(code);
+            const isFixed = clean.includes('replace') || clean.includes('slice') || clean.includes('charAt') || clean.includes('"H" +');
+            return isFixed
+                ? ['> "Hello"']
+                : ['> "hello"'];
         }
     }
 ];
@@ -336,7 +366,6 @@ const Game1 = () => {
                              <div className="p-4 bg-slate-800/50 border-b border-slate-700 text-sm text-slate-300">
                                  <p className="mb-2 font-bold text-white">{currentChallenge.title}</p>
                                  <p>{currentChallenge.description}</p>
-                                 <div className="mt-2 text-yellow-400 text-xs">💡 Hint: {currentChallenge.hint}</div>
                              </div>
 
                              <textarea
