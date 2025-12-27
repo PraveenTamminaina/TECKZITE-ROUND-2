@@ -48,9 +48,7 @@ router.post('/submit/html', protect, async (req, res) => {
     if (existingIndex !== -1) {
         const previousAnswer = user.game1State.answers[existingIndex];
         if (previousAnswer.isCorrect) {
-            user.scores.html -= 5;
-        } else {
-            user.scores.html += 1; // Revert negative marking
+            user.scores.html -= 10;
         }
         // Remove old answer
         user.game1State.answers.splice(existingIndex, 1);
@@ -58,9 +56,7 @@ router.post('/submit/html', protect, async (req, res) => {
 
     // Apply new score
     if (isCorrect) {
-        user.scores.html += 5;
-    } else {
-        user.scores.html -= 1; // Negative marking
+        user.scores.html += 10;
     }
     
     user.scores.total = user.scores.html + user.scores.flexbox;
@@ -72,7 +68,7 @@ router.post('/submit/html', protect, async (req, res) => {
     
     await user.save();
     // Silent response: Do not return isCorrect or score
-    res.json({ success: true });
+    res.json({ success: true, scores: user.scores });
 });
 
 // @route   POST /api/game/finish/game1
@@ -111,14 +107,14 @@ router.post('/submit/flexbox', protect, async (req, res) => {
     if (existingIndex !== -1) {
         const prev = user.game2State.answers[existingIndex];
         if (prev.isCorrect) {
-            user.scores.flexbox -= 10;
+            user.scores.flexbox -= 5;
         }
         user.game2State.answers.splice(existingIndex, 1);
     }
 
     // Apply new score
     if (isCorrect) {
-        user.scores.flexbox += 10;
+        user.scores.flexbox += 5;
     }
 
     user.scores.total = (user.scores.html || 0) + user.scores.flexbox;

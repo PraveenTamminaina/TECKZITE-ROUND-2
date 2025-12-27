@@ -81,28 +81,26 @@ function handleSubmit(e) {
     },
     {
         id: 4,
-        title: "The Infinite Loop",
-        description: "Infinite API calls! Fix the useEffect dependency array issue. Expected: '(Effect ran once)'.",
+        title: "Find the Maximum",
+        description: "The function returns 'NaN' instead of the maximum number! Fix it to return 10.",
         language: "javascript",
-        initialCode: `function fetchUserData() {
-  // const [users, setUsers] = useState([]);
-  
-  useEffect(() => {
-    console.log("Fetching /api/users...");
-    // setUsers(data);
-  });
-}`,
+        initialCode: `function findMax(arr) {
+  // Input: [1, 5, 10, 2]
+  return Math.max(arr);
+}
+
+console.log(findMax([1, 5, 10, 2]));`,
         validation: (code) => {
             const clean = stripComments(code);
-            return /useEffect\(\(\)\s*=>\s*{[\s\S]*?},\s*\[.*\]\s*\)/.test(clean.replace(/\s+/g, ' '));
+            return clean.includes('...') || clean.includes('apply') || clean.includes('reduce');
         },
         type: 'console',
         logs: (code) => {
             const clean = stripComments(code);
-            const isFixed = /useEffect\(\(\)\s*=>\s*{[\s\S]*?},\s*\[.*\]\s*\)/.test(clean.replace(/\s+/g, ' '));
+            const isFixed = clean.includes('...') || clean.includes('apply') || clean.includes('reduce');
             return isFixed 
-                ? ['> Fetching /api/users...', '> (Effect ran once)'] 
-                : ['> Fetching /api/users...', '> Fetching /api/users...', '> (Infinite Loop detected!)'];
+                ? ['> 10'] 
+                : ['> NaN'];
         }
     },
     {
@@ -259,7 +257,7 @@ console.log(capitalize());`,
 ];
 
 const Game1 = () => {
-    const { user } = useGame();
+    const { user, setUser } = useGame();
     const navigate = useNavigate();
     
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -294,11 +292,14 @@ const Game1 = () => {
         
         if (isValid) {
             try {
-                await api.post('/game/submit/html', {
+                const { data } = await api.post('/game/submit/html', {
                    questionId: currentChallenge.id,
                    answer: "FIXED",
                    isCorrect: true
                 });
+                if (data.scores) {
+                    setUser(prev => ({ ...prev, scores: data.scores }));
+                }
             } catch(e) {}
         }
     };

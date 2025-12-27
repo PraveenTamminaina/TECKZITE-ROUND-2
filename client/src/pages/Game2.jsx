@@ -115,7 +115,7 @@ const LEVELS = [
 ];
 
 const Game2 = () => {
-    const { user } = useGame();
+    const { user, setUser } = useGame();
     const navigate = useNavigate();
 
     const [currentLevelIndex, setCurrentLevelIndex] = useState(0);
@@ -156,11 +156,14 @@ const Game2 = () => {
              
              // Submit score silently
              try {
-                await api.post('/game/submit/flexbox', {
+                const { data } = await api.post('/game/submit/flexbox', {
                     level: currentLevel.id,
                     userCss: css,
                     isCorrect: true 
                 });
+                if (data.scores) {
+                    setUser(prev => ({ ...prev, scores: data.scores }));
+                }
             } catch(e) { console.error(e); }
             
             // Visual feedback
