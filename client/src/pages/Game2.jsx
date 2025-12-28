@@ -73,7 +73,8 @@ const LEVELS = [
         frogs: 3,
         lilypadStyle: { flexDirection: 'row-reverse', justifyContent: 'flex-start' }, 
         frogColor: 'green',
-        styleOverride: { flexDirection: 'row-reverse' } 
+        // Distinct colors: Red (hue-rotate), Yellow, Green
+        frogVariants: ['hue-rotate(290deg)', 'hue-rotate(60deg)', 'hue-rotate(0deg)']
     },
     {
         id: 8,
@@ -91,7 +92,9 @@ const LEVELS = [
         regex: /flex-wrap\s*:\s*wrap/,
         frogs: 7, 
         lilypadStyle: { flexWrap: 'wrap' },
-        frogColor: 'green'
+        frogColor: 'green',
+        // Force width to ensure wrapping happens
+        itemStyle: { width: '20%' }
     },
     {
         id: 10,
@@ -299,7 +302,14 @@ const Game2 = () => {
                         {/* Background Lilies (Targets) */}
                         <div className="absolute inset-0 p-8 flex w-full h-full pointer-events-none gap-4 flex-wrap" style={currentLevel.lilypadStyle}>
                              {Array.from({ length: currentLevel.frogs }).map((_, i) => (
-                                 <div key={i} className="w-24 h-24 bg-green-800/50 rounded-full border-4 border-green-700/50 flex items-center justify-center m-2 text-4xl opacity-50 shrink-0">
+                                 <div 
+                                    key={i} 
+                                    className="w-24 h-24 bg-green-800/50 rounded-full border-4 border-green-700/50 flex items-center justify-center m-2 text-4xl opacity-50 shrink-0 transform transition-all"
+                                    style={{
+                                        filter: currentLevel.frogVariants ? currentLevel.frogVariants[i % currentLevel.frogVariants.length] : 'none',
+                                        ...(currentLevel.itemStyle || {})
+                                    }}
+                                 >
                                      🍃
                                  </div>
                              ))}
@@ -308,7 +318,14 @@ const Game2 = () => {
                         {/* Foreground Frogs (Moved by User CSS) */}
                         <div id="pond-preview" className="p-8 w-full h-full absolute inset-0 pointer-events-none gap-4">
                              {Array.from({ length: currentLevel.frogs }).map((_, i) => (
-                                 <div key={i} className="w-24 h-24 flex items-center justify-center text-6xl m-2 animate-pulse shrink-0">
+                                 <div 
+                                    key={i} 
+                                    className="w-24 h-24 flex items-center justify-center text-6xl m-2 animate-pulse shrink-0 transform transition-all"
+                                    style={{
+                                        filter: currentLevel.frogVariants ? currentLevel.frogVariants[i % currentLevel.frogVariants.length] : 'none',
+                                        ...(currentLevel.itemStyle || {})
+                                    }}
+                                 >
                                      🐸
                                  </div>
                              ))}
