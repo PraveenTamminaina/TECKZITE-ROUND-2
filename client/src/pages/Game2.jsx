@@ -8,8 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 const LEVELS = [
     {
         id: 1,
-        instruction: "Welcome to Flexbox Froggy! A frog is lost. Use justify-content to move it to the lilypad on the right.",
-        hint: "values: flex-start, flex-end, center, space-between, space-around",
+        instruction: "Update CSS code so that frogs appear on lilypads.",
         initialCss: "#pond {\n  display: flex;\n  /* Your code here */\n\n}",
         expectedCss: "justify-content",
         regex: /justify-content\s*:\s*flex-end/,
@@ -19,8 +18,7 @@ const LEVELS = [
     },
     {
         id: 2,
-        instruction: "Use justify-content again to help these frogs get to their lilypads in the center.",
-        hint: "Center them.",
+        instruction: "Update CSS code so that frogs appear on lilypads.",
         initialCss: "#pond {\n  display: flex;\n  /* Your code here */\n\n}",
         expectedCss: "justify-content",
         regex: /justify-content\s*:\s*center/,
@@ -30,8 +28,7 @@ const LEVELS = [
     },
     {
         id: 3,
-        instruction: "Help all three frogs find their lilypads by spacing them around.",
-        hint: "Space around.",
+        instruction: "Update CSS code so that frogs appear on lilypads.",
         initialCss: "#pond {\n  display: flex;\n  /* Your code here */\n\n}",
         expectedCss: "justify-content",
         regex: /justify-content\s*:\s*space-around/,
@@ -41,8 +38,7 @@ const LEVELS = [
     },
     {
         id: 4,
-        instruction: "Now the lilypads on the edges have drifted to the shore. Space them between.",
-        hint: "Space between.",
+        instruction: "Update CSS code so that frogs appear on lilypads.",
         initialCss: "#pond {\n  display: flex;\n  /* Your code here */\n\n}",
         expectedCss: "justify-content",
         regex: /justify-content\s*:\s*space-between/,
@@ -52,8 +48,7 @@ const LEVELS = [
     },
     {
         id: 5,
-        instruction: "Now use align-items to help the frogs get to the bottom of the pond.",
-        hint: "values: flex-start, flex-end, center, baseline, stretch",
+        instruction: "Update CSS code so that frogs appear on lilypads.",
         initialCss: "#pond {\n  display: flex;\n  align-items: flex-start;\n  /* Your code here */\n\n}",
         expectedCss: "align-items",
         regex: /align-items\s*:\s*flex-end/,
@@ -63,8 +58,7 @@ const LEVELS = [
     },
     {
         id: 6,
-        instruction: "Lead the frog to the center of the pond using a combination of justify-content and align-items.",
-        hint: "Center horizontally and vertically.",
+        instruction: "Update CSS code so that frogs appear on lilypads.",
         initialCss: "#pond {\n  display: flex;\n  /* Your code here */\n\n}",
         regex: /justify-content\s*:\s*center[\s\S]*align-items\s*:\s*center|align-items\s*:\s*center[\s\S]*justify-content\s*:\s*center/,
         frogs: 1,
@@ -73,8 +67,7 @@ const LEVELS = [
     },
     {
         id: 7,
-        instruction: "The frogs need to cross the pond. This time, there's plenty of space around them. Use flex-direction.",
-        hint: "values: row, row-reverse, column, column-reverse",
+        instruction: "Update CSS code so that frogs appear on lilypads.",
         initialCss: "#pond {\n  display: flex;\n  /* Your code here */\n\n}",
         regex: /flex-direction\s*:\s*row-reverse/,
         frogs: 3,
@@ -84,8 +77,7 @@ const LEVELS = [
     },
     {
         id: 8,
-        instruction: "Help the frogs find their column of lilypads using flex-direction.",
-        hint: "Think vertically.",
+        instruction: "Update CSS code so that frogs appear on lilypads.",
         initialCss: "#pond {\n  display: flex;\n  /* Your code here */\n\n}",
         regex: /flex-direction\s*:\s*column/,
         frogs: 3,
@@ -94,8 +86,7 @@ const LEVELS = [
     },
     {
         id: 9,
-        instruction: "The frogs are all squeezed onto a single row of lilypads. Spread them out using flex-wrap.",
-        hint: "wrap or wrap-reverse",
+        instruction: "Update CSS code so that frogs appear on lilypads.",
         initialCss: "#pond {\n  display: flex;\n  /* Your code here */\n\n}",
         regex: /flex-wrap\s*:\s*wrap/,
         frogs: 7, 
@@ -104,8 +95,7 @@ const LEVELS = [
     },
     {
         id: 10,
-        instruction: "Everything is backwards! Use flex-flow to fix it.",
-        hint: "flex-flow is a shorthand for flex-direction and flex-wrap.",
+        instruction: "Update CSS code so that frogs appear on lilypads.",
         initialCss: "#pond {\n  display: flex;\n  /* Your code here */\n\n}",
         regex: /flex-flow\s*:\s*column-reverse\s*wrap-reverse/,
         frogs: 5,
