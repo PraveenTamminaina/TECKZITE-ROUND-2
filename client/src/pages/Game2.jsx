@@ -237,10 +237,7 @@ const Game2 = () => {
                                  <p className="text-lg text-white mb-4 leading-relaxed flex-1">{currentLevel.instruction}</p>
                                  {completed[currentLevel.id] && <span className="text-green-400 bg-green-400/10 px-2 py-1 rounded text-xs font-bold">SOLVED</span>}
                              </div>
-                             <div className="flex items-start gap-2 text-yellow-500/90 bg-yellow-500/10 p-3 rounded-lg text-sm">
-                                 <span>💡</span>
-                                 <p>{currentLevel.hint}</p>
-                             </div>
+
                          </div>
                          
                          <div className="flex-1 relative bg-[#1e1e1e] flex flex-col">
