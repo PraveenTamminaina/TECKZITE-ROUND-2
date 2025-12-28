@@ -136,7 +136,7 @@ const Game2 = () => {
             setTimeLeft((prev) => {
                 if (prev <= 1) {
                     clearInterval(timer);
-                    finishGame();
+                    finishGame(true);
                     return 0;
                 }
                 return prev - 1;
@@ -185,8 +185,8 @@ const Game2 = () => {
         }
     };
 
-    const finishGame = async () => {
-        if (!window.confirm("Finish Phase 2?")) return;
+    const finishGame = async (autoSubmit = false) => {
+        if (!autoSubmit && !window.confirm("Finish Phase 2?")) return;
         try {
             await api.post('/game/finish'); 
             navigate('/finished');
@@ -284,7 +284,7 @@ const Game2 = () => {
 
                              {currentLevelIndex === LEVELS.length - 1 && (
                                 <button
-                                    onClick={finishGame}
+                                    onClick={() => finishGame(false)}
                                     className="px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-lg shadow-lg"
                                 >
                                     Finish

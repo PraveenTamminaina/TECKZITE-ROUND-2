@@ -275,7 +275,14 @@ const Game1 = () => {
     // Timer logic same as before...
      useEffect(() => {
         const timer = setInterval(() => {
-            setTimeLeft((prev) => prev <= 1 ? 0 : prev - 1);
+            setTimeLeft((prev) => {
+                if (prev <= 1) {
+                    clearInterval(timer);
+                    finishGame(true); // Auto-submit
+                    return 0;
+                }
+                return prev - 1;
+            });
         }, 1000);
         return () => clearInterval(timer);
     }, []);
@@ -306,8 +313,8 @@ const Game1 = () => {
 
     const handleNext = () => currentIndex < CHALLENGES.length - 1 && setCurrentIndex(prev => prev + 1);
     const handlePrev = () => currentIndex > 0 && setCurrentIndex(prev => prev - 1);
-    const finishGame = async () => {
-         if (!window.confirm("Submit Debugging Challenges?")) return;
+    const finishGame = async (autoSubmit = false) => {
+         if (!autoSubmit && !window.confirm("Submit Debugging Challenges?")) return;
          try {
              await api.post('/game/finish/game1');
              navigate('/game2');
@@ -424,7 +431,7 @@ const Game1 = () => {
                              <div className="bg-slate-800 p-4 border-t border-slate-700 flex justify-between">
                                 <button onClick={handlePrev} disabled={currentIndex === 0} className="px-4 py-2 bg-slate-700 text-white rounded hover:bg-slate-600 disabled:opacity-50">Previous</button>
                                 {currentIndex === CHALLENGES.length - 1 ? (
-                                    <button onClick={finishGame} className="px-6 py-2 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded shadow-lg">Finish Phase 1</button>
+                                    <button onClick={() => finishGame(false)} className="px-6 py-2 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded shadow-lg">Finish Phase 1</button>
                                 ) : (
                                     <button onClick={handleNext} className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded">Next Challenge</button>
                                 )}
